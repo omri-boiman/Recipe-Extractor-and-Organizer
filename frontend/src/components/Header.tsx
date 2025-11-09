@@ -10,7 +10,7 @@ export default function Header() {
           <div className="w-10 h-10 rounded-xl bg-brand-500 text-white flex items-center justify-center shadow-soft">
             <Utensils size={20} />
           </div>
-          <h1 className="text-xl font-semibold tracking-tight">Recipe Organizer</h1>
+          <h1 className="text-xl font-semibold tracking-tight">Recipe Extractor and Organizer</h1>
         </div>
         <div className="flex items-center gap-3">
           <DarkModeToggle />
