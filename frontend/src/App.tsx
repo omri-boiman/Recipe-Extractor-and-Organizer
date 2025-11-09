@@ -1,4 +1,9 @@
 import React, { useEffect, useMemo, useState } from 'react'
+import Header from './components/Header'
+import Footer from './components/Footer'
+import Card from './components/Card'
+import ChatPanel from './components/ChatPanel'
+import { ArrowLeft } from 'lucide-react'
 
 export type IngredientSection = {
   section: string
@@ -24,16 +29,7 @@ export type Recipe = {
   steps: StepsSection[]
 }
 
-function Navbar() {
-  return (
-    <header className="border-b border-slate-200 bg-white/80 backdrop-blur">
-      <div className="max-w-6xl mx-auto px-4 py-4 flex items-center gap-3">
-        <div className="w-9 h-9 rounded bg-emerald-500 flex items-center justify-center text-white font-bold">R</div>
-        <h1 className="text-xl font-semibold">Recipe Organizer</h1>
-      </div>
-    </header>
-  )
-}
+// Legacy Navbar replaced by Header component
 
 function ExtractForm({ onSaved, existingUrls = [] }: { onSaved?: () => void; existingUrls?: string[] }) {
   const [url, setUrl] = useState('')
@@ -82,23 +78,27 @@ function ExtractForm({ onSaved, existingUrls = [] }: { onSaved?: () => void; exi
   }
 
   return (
-    <section className="bg-white shadow-sm rounded-lg border border-slate-200 p-5 mb-6">
-      <h2 className="text-lg font-semibold mb-3">Add a recipe from URL</h2>
-      <form onSubmit={submit} className="flex flex-col gap-3 sm:flex-row">
-        <input
-          type="url"
-          required
-          value={url}
-          onChange={(e) => setUrl(e.target.value)}
-          placeholder="https://example.com/your-recipe"
-          className="flex-1 rounded-md border border-slate-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-500"
-        />
-        <button
-          disabled={busy}
-          className="rounded-md bg-emerald-600 text-white px-4 py-2 hover:bg-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed"
-        >{busy ? 'Extracting…' : 'Extract & Save'}</button>
-      </form>
-      {msg && <p className="mt-2 text-sm text-slate-600">{msg}</p>}
+    <section className="relative mb-6">
+      {/* Gradient ring wrapper */}
+      <div className="absolute -inset-[2px] rounded-xl bg-gradient-to-r from-brand-500/50 via-indigo-500/40 to-sky-500/50 opacity-80 blur-sm dark:opacity-60 pointer-events-none"></div>
+      <div className="relative bg-white/90 dark:bg-slate-800/80 backdrop-blur-sm shadow-soft rounded-xl border border-slate-200 dark:border-slate-700 p-5">
+        <h2 className="text-lg font-semibold mb-4 flex items-center gap-2"><span className="bg-brand-500/10 dark:bg-brand-500/20 text-brand-600 dark:text-brand-300 px-2 py-1 rounded-md text-xs font-medium">URL</span> Add a recipe from URL</h2>
+        <form onSubmit={submit} className="flex flex-col gap-3 sm:flex-row">
+          <input
+            type="url"
+            required
+            value={url}
+            onChange={(e) => setUrl(e.target.value)}
+            placeholder="https://example.com/your-recipe"
+            className="flex-1 rounded-md border border-slate-300 dark:border-slate-600 bg-white/80 dark:bg-slate-900/40 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-500 dark:focus:ring-brand-400 placeholder:text-slate-400 dark:placeholder:text-slate-500"
+          />
+          <button
+            disabled={busy}
+            className="rounded-md bg-brand-600 dark:bg-brand-500 text-white px-5 py-2 font-medium shadow hover:bg-brand-700 dark:hover:bg-brand-600 transition disabled:opacity-50 disabled:cursor-not-allowed"
+          >{busy ? 'Extracting…' : 'Extract & Save'}</button>
+        </form>
+        {msg && <p className="mt-3 text-sm text-slate-600 dark:text-slate-400">{msg}</p>}
+      </div>
     </section>
   )
 }
@@ -114,10 +114,11 @@ function RecipeCard({ recipe, isActive, onSelect, onDelete }: { recipe: Recipe; 
     [recipe.steps]
   )
   return (
-    <button onClick={onSelect} className={`text-left bg-white rounded-lg border border-slate-200 shadow-sm hover:shadow-md transition ${isActive ? 'ring-2 ring-emerald-500' : ''}`}>
-      <div className="p-4 border-b border-slate-100">
-        <h3 className="font-semibold text-slate-900 line-clamp-2">{recipe.title || 'Untitled recipe'}</h3>
-        <div className="text-sm text-slate-600 mt-1 flex items-center gap-3">
+    <Card onClick={onSelect} active={isActive} className="group h-full">
+      {/* Upper content */}
+      <div className="p-4 border-b border-slate-100 dark:border-slate-700">
+        <h3 className="font-semibold text-slate-900 dark:text-slate-100 line-clamp-2 group-hover:translate-x-px transition-transform min-h-[2.5rem]">{recipe.title || 'Untitled recipe'}</h3>
+        <div className="text-sm text-slate-600 dark:text-slate-400 mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 leading-relaxed">
           <span>{recipe.author || 'Unknown author'}</span>
           <span>•</span>
           <span>{recipe.servings ? `${recipe.servings} servings` : 'Servings N/A'}</span>
@@ -125,32 +126,34 @@ function RecipeCard({ recipe, isActive, onSelect, onDelete }: { recipe: Recipe; 
           <span>{time ? `${time} min` : 'Time N/A'}</span>
         </div>
       </div>
-      <div className="p-4 grid grid-cols-2 gap-4">
-        <div>
-          <h4 className="text-sm font-medium text-slate-700 mb-1">Ingredients</h4>
-          <ul className="text-sm text-slate-700 space-y-1">
+      {/* Middle content grows */}
+      <div className="p-4 grid grid-cols-2 gap-4 flex-1">
+        <div className="flex flex-col min-h-0">
+          <h4 className="text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Ingredients</h4>
+          <ul className="text-sm text-slate-700 dark:text-slate-300 space-y-1 flex-1">
             {flatIngredients.slice(0, 6).map((i, idx) => (
               <li key={idx} className="truncate">• {i}</li>
             ))}
           </ul>
         </div>
-        <div>
-          <h4 className="text-sm font-medium text-slate-700 mb-1">Steps</h4>
-          <ul className="text-sm text-slate-700 space-y-1">
+        <div className="flex flex-col min-h-0">
+          <h4 className="text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Steps</h4>
+          <ul className="text-sm text-slate-700 dark:text-slate-300 space-y-1 flex-1">
             {flatSteps.slice(0, 3).map((s, idx) => (
               <li key={idx} className="truncate"><span className="font-medium">{idx + 1}.</span> {s}</li>
             ))}
           </ul>
         </div>
       </div>
-      <div className="px-4 pb-4 flex gap-2">
+      {/* Footer pinned to bottom */}
+      <div className="mt-auto px-4 pb-4 pt-0 flex justify-end">
         <button
           type="button"
           onClick={(e) => { e.stopPropagation(); onDelete() }}
-          className="text-sm text-red-700 hover:underline"
+          className="text-xs font-medium text-red-600 dark:text-red-400 hover:underline tracking-wide"
         >Delete</button>
       </div>
-    </button>
+    </Card>
   )
 }
 
@@ -160,9 +163,9 @@ function RecipeDetails({ recipe }: { recipe: Recipe | null }) {
   const hasMultipleSections = (recipe.ingredients || []).length > 1
   const hasMultipleStepSections = (recipe.steps || []).length > 1
   return (
-    <div className="bg-white rounded-lg border border-slate-200 shadow-sm p-5">
-      <h2 className="text-2xl font-semibold text-slate-900">{recipe.title || 'Untitled recipe'}</h2>
-      <div className="mt-1 text-sm text-slate-600 flex flex-wrap gap-3">
+    <div className="glass rounded-xl border border-slate-200 dark:border-slate-700 shadow-soft p-5">
+      <h2 className="text-2xl font-semibold text-slate-900 dark:text-slate-100">{recipe.title || 'Untitled recipe'}</h2>
+      <div className="mt-1 text-sm text-slate-600 dark:text-slate-400 flex flex-wrap gap-3">
         <span>{recipe.author || 'Unknown author'}</span>
         <span>•</span>
         <span>{recipe.servings ? `${recipe.servings} servings` : 'Servings N/A'}</span>
@@ -171,21 +174,21 @@ function RecipeDetails({ recipe }: { recipe: Recipe | null }) {
         {recipe.source_url && (
           <>
             <span>•</span>
-            <a className="text-emerald-700 hover:underline" href={recipe.source_url} target="_blank">View source</a>
+            <a className="text-emerald-700 dark:text-emerald-300 hover:underline" href={recipe.source_url} target="_blank">View source</a>
           </>
         )}
       </div>
 
       <div className="grid md:grid-cols-2 gap-6 mt-6">
         <div>
-          <h3 className="text-lg font-medium mb-2">Ingredients</h3>
+          <h3 className="text-lg font-medium mb-2 text-slate-900 dark:text-slate-100">Ingredients</h3>
           <div className="space-y-4">
             {(recipe.ingredients || []).map((sec, sidx) => (
               <div key={sidx}>
                 {hasMultipleSections && (
-                  <div className="text-sm font-semibold text-slate-700">{sec.section || 'Ingredients'}</div>
+                  <div className="text-sm font-semibold text-slate-700 dark:text-slate-200">{sec.section || 'Ingredients'}</div>
                 )}
-                <ul className="list-disc list-inside space-y-1">
+                <ul className="list-disc list-inside space-y-1 text-slate-700 dark:text-slate-300">
                   {(sec.items || []).map((i, idx) => (
                     <li key={idx}>{i}</li>
                   ))}
@@ -195,14 +198,14 @@ function RecipeDetails({ recipe }: { recipe: Recipe | null }) {
           </div>
         </div>
         <div>
-          <h3 className="text-lg font-medium mb-2">Steps</h3>
+          <h3 className="text-lg font-medium mb-2 text-slate-900 dark:text-slate-100">Steps</h3>
           <div className="space-y-4">
             {(recipe.steps || []).map((sec, sidx) => (
               <div key={sidx}>
                 {hasMultipleStepSections && (
-                  <div className="text-sm font-semibold text-slate-700">{sec.section || 'Steps'}</div>
+                  <div className="text-sm font-semibold text-slate-700 dark:text-slate-200">{sec.section || 'Steps'}</div>
                 )}
-                <ol className="list-decimal list-inside space-y-2">
+                <ol className="list-decimal list-inside space-y-2 text-slate-700 dark:text-slate-300">
                   {(sec.items || []).map((s, idx) => (
                     <li key={idx}>{s}</li>
                   ))}
@@ -223,6 +226,9 @@ export default function App() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const [selectedIdx, setSelectedIdx] = useState<number | null>(null)
+  const [showAll, setShowAll] = useState(false)
+  const ordered = useMemo(() => [...recipes].reverse(), [recipes])
+  const current = selectedIdx != null ? ordered[selectedIdx] ?? null : null
 
   const load = async () => {
     try {
@@ -247,83 +253,86 @@ export default function App() {
   }, [])
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-800">
-      <Navbar />
-      <main className="max-w-6xl mx-auto px-4 py-6">
-        {/* Section 1: Only URL input */}
-        <ExtractForm onSaved={load} existingUrls={recipes.map((r) => r.source_url)} />
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100">
+      <Header />
+      <main className="max-w-6xl mx-auto px-4 py-8 space-y-8">
+        {current ? (
+          <section className="space-y-6">
+            <div className="flex items-center gap-3">
+              <button
+                type="button"
+                onClick={() => setSelectedIdx(null)}
+                className="inline-flex items-center gap-2 rounded-md border border-slate-300 dark:border-slate-600 px-3 py-1.5 text-sm hover:bg-slate-50 dark:hover:bg-slate-800"
+              >
+                <ArrowLeft size={16} /> Back
+              </button>
+            </div>
 
-        {/* Section 2: Only existing recipes */}
-        <section className="mt-2">
-          <div className="mb-3 flex items-center justify-between">
-            <h2 className="text-lg font-semibold">Saved recipes</h2>
-            <div className="text-sm text-slate-600">{loading ? 'Loading…' : `${recipes.length} saved`}</div>
-          </div>
+            <RecipeDetails recipe={current} />
 
-          {error && <div className="mb-4 text-sm text-red-600">{error}</div>}
+            <ChatPanel sourceUrl={current.source_url} />
+          </section>
+        ) : (
+          <>
+            {/* Section 1: Only URL input */}
+            <ExtractForm onSaved={load} existingUrls={recipes.map((r) => r.source_url)} />
 
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {recipes.map((r, i) => (
-              <RecipeCard
-                key={`${r.source_url || r.title || 'idx'}-${i}`}
-                recipe={r}
-                isActive={selectedIdx === i}
-                onSelect={() => {
-                  // open in a new window with basic details view using a data URL
-                  const win = window.open('', '_blank')
-                  if (win) {
-                    const time = r.total_time || ((r.prep_time || 0) + (r.cook_time || 0))
-                    const multi = (r.ingredients || []).length > 1
-                    const ingHtml = (r.ingredients || [])
-                      .map(sec => `
-                        ${multi ? `<div style='font-weight:600; color:#334155; font-size:14px; margin-top:10px;'>${sec.section || 'Ingredients'}</div>` : ''}
-                        <ul>${(sec.items || []).map(i => `<li>${i}</li>`).join('')}</ul>
-                      `)
-                      .join('')
-                    const stepsMulti = (r.steps || []).length > 1
-                    const stepsHtml = (r.steps || [])
-                      .map(sec => `
-                        ${stepsMulti ? `<div style='font-weight:600; color:#334155; font-size:14px; margin-top:10px;'>${sec.section || 'Steps'}</div>` : ''}
-                        <ol>${(sec.items || []).map(s => `<li>${s}</li>`).join('')}</ol>
-                      `)
-                      .join('')
-                    win.document.write(`<!doctype html><html><head><title>${r.title || 'Recipe'}</title><meta charset='utf-8'><meta name='viewport' content='width=device-width, initial-scale=1'>
-                    <style>body{font-family:system-ui, -apple-system, Segoe UI, Roboto, Inter, Arial; padding:24px; max-width:900px; margin:0 auto; background:#f8fafc; color:#0f172a} .card{background:#fff; border:1px solid #e2e8f0; border-radius:12px; box-shadow:0 1px 2px rgba(0,0,0,0.04); overflow:hidden} .card h1{font-size:28px; margin:0 0 8px} .muted{color:#475569; font-size:14px} h2{font-size:18px; margin-top:20px}</style></head><body>
-                    <div class='card' style='padding:20px;'>
-                      <h1>${r.title || 'Untitled recipe'}</h1>
-                      <div class='muted'>${r.author || 'Unknown author'} • ${r.servings || 'Servings N/A'} • ${time ? time + ' min' : 'Time N/A'}</div>
-                      ${r.source_url ? `<div style='margin-top:6px'><a href='${r.source_url}' target='_blank'>View source</a></div>` : ''}
-                      <h2>Ingredients</h2>
-                      ${ingHtml}
-                      <h2>Steps</h2>
-                      ${stepsHtml}
-                    </div>
-                    
-                    </body></html>`)
-                    win.document.close()
-                  }
-                }}
-                onDelete={async () => {
-                  if (!confirm('Delete this recipe?')) return
-                  try {
-                    const res = await fetch(`/recipes?source_url=${encodeURIComponent(r.source_url)}`, { method: 'DELETE' })
-                    if (!res.ok) throw new Error('Delete failed')
-                    await load()
-                  } catch (err) {
-                    console.error(err)
-                    alert('Failed to delete recipe')
-                  }
-                }}
-              />
-            ))}
-          </div>
+            {/* Section 2: Only existing recipes */}
+            <section className="mt-2">
+              <div className="mb-3 flex items-center justify-between">
+                <h2 className="text-lg font-semibold">Saved recipes</h2>
+                <div className="text-sm text-slate-600 dark:text-slate-400">
+                  {loading ? 'Loading…' : `${recipes.length} saved`}
+                </div>
+              </div>
 
-          {!loading && !recipes.length && (
-            <div className="text-slate-600 mt-2">No recipes saved yet. Paste a URL above to get started.</div>
-          )}
-        </section>
+              {error && <div className="mb-4 text-sm text-red-600">{error}</div>}
+
+              {(() => {
+                const visible = showAll ? ordered : ordered.slice(0, 6)
+                return (
+                  <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 items-stretch">
+                    {visible.map((r, i) => (
+                      <RecipeCard
+                        key={`${r.source_url || r.title || 'idx'}-${i}`}
+                        recipe={r}
+                        isActive={false}
+                        onSelect={() => setSelectedIdx(i)}
+                        onDelete={async () => {
+                          if (!confirm('Delete this recipe?')) return
+                          try {
+                            const res = await fetch(`/recipes?source_url=${encodeURIComponent(r.source_url)}`, { method: 'DELETE' })
+                            if (!res.ok) throw new Error('Delete failed')
+                            await load()
+                          } catch (err) {
+                            console.error(err)
+                            alert('Failed to delete recipe')
+                          }
+                        }}
+                      />
+                    ))}
+                  </div>
+                )
+              })()}
+
+              {!loading && recipes.length > 6 && (
+                <div className="mt-4 flex justify-center">
+                  <button
+                    type="button"
+                    onClick={() => setShowAll((v) => !v)}
+                    className="px-4 py-2 text-sm rounded-md border border-slate-300 dark:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-800"
+                  >{showAll ? 'Show less' : 'Show more'}</button>
+                </div>
+              )}
+
+              {!loading && !recipes.length && (
+                <div className="text-slate-600 mt-2">No recipes saved yet. Paste a URL above to get started.</div>
+              )}
+            </section>
+          </>
+        )}
       </main>
-      <footer className="text-center text-slate-500 text-sm py-8">Made with ❤️ for good food</footer>
+      <Footer />
 
   {/* Modal removed: details open in new window */}
     </div>
