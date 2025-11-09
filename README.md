@@ -3,7 +3,14 @@
 A full‑stack app that extracts structured recipes from web pages using BeautifulSoup and GitHub Models (Azure AI Inference), stores them in SQLite, and serves a React/Tailwind frontend.
 
 ## Demo Video
+### Main Page
+https://github.com/user-attachments/assets/e0bcfaa0-bc83-4208-9e78-7fd02438990c
 
+### Extraction
+https://github.com/user-attachments/assets/f5133b98-01fd-4c84-9751-abb5b01300c4
+
+### AI ChatBot
+https://github.com/user-attachments/assets/d8b7bad6-7873-4c37-802a-8f6b20492d41
 
 ## Tech stack
 - Backend: FastAPI, Pydantic, SQLite, BeautifulSoup, Requests
