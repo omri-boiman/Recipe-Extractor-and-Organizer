@@ -219,7 +219,6 @@ function RecipeDetails({ recipe }: { recipe: Recipe | null }) {
   )
 }
 
-// Removed modal - details open in a new window
 
 export default function App() {
   const [recipes, setRecipes] = useState<Recipe[]>([])
@@ -227,7 +226,8 @@ export default function App() {
   const [error, setError] = useState('')
   const [selectedIdx, setSelectedIdx] = useState<number | null>(null)
   const [showAll, setShowAll] = useState(false)
-  const ordered = useMemo(() => [...recipes].reverse(), [recipes])
+
+  const ordered = useMemo(() => recipes, [recipes])
   const current = selectedIdx != null ? ordered[selectedIdx] ?? null : null
 
   const load = async () => {
