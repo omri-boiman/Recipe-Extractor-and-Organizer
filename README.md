@@ -12,6 +12,9 @@ https://github.com/user-attachments/assets/f5133b98-01fd-4c84-9751-abb5b01300c4
 ### AI ChatBot
 https://github.com/user-attachments/assets/d8b7bad6-7873-4c37-802a-8f6b20492d41
 
+### Edit
+https://github.com/user-attachments/assets/e1f3873d-1b5e-4dc8-aea5-43a420711fd5
+
 ## Tech stack
 - Backend: FastAPI, Pydantic, SQLite, BeautifulSoup, Requests
 - AI: Azure AI Inference (GitHub Models) via `azure-ai-inference`
