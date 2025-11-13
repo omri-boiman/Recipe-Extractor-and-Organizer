@@ -139,6 +139,17 @@ class ChatQuestionRequest(BaseModel):
     source_url: str
     question: str
 
+class UpdateRecipe(BaseModel):
+    source_url: str
+    title: Optional[str] = None
+    author: Optional[str] = None
+    prep_time: Optional[int] = None
+    cook_time: Optional[int] = None
+    total_time: Optional[int] = None
+    servings: Optional[str] = None
+    ingredients: Optional[List[str]] = None
+    steps: Optional[List[str]] = None
+
 # ----- UTILS -----
 def time_to_minutes(text: str) -> int:
     if not text:
@@ -1061,6 +1072,51 @@ def db_health():
                 con.close()
         except Exception:
             pass
+
+@app.patch("/recipes")
+def update_recipe(update: UpdateRecipe):
+    con = sqlite3.connect(DB_PATH)
+    try:
+        cur = con.cursor()
+        cur.execute(
+            """
+            SELECT * FROM recipes WHERE source_url = ?
+            """
+            , (update.source_url,)
+        )
+        row = cur.fetchone()
+        if row is None:
+            raise HTTPException(status_code=404, detail="Recipe not found")
+        columns = [col[0] for col in cur.description]
+        row_dict = dict(zip(columns, row))
+        changes = update.dict(exclude_unset=True)
+        for key, value in changes.items():
+            if key == "ingredients":
+                value = json.dumps([
+                    {"section": s.section, "items": s.items}
+                    for s in clean_ingredients(value)
+                ])
+                key = "ingredients_json"
+            elif key == "steps":
+                value = json.dumps([
+                    {"section": s.section, "items": s.items}
+                    for s in clean_steps(value)
+                ])
+                key = "steps_json"
+            else:
+                row_dict[key] = value
+            cur.execute(
+                f"UPDATE recipes SET {key} = ? WHERE source_url = ?",
+                (value, update.source_url)
+            )
+            con.commit()
+
+        
+    finally:
+        con.close()
+    
+    
+    
 
 
 if __name__ == "__main__":

@@ -3,6 +3,7 @@ import Header from './components/Header'
 import Footer from './components/Footer'
 import Card from './components/Card'
 import ChatPanel from './components/ChatPanel'
+import EditRecipeForm from './components/EditRecipeForm'
 import { ArrowLeft } from 'lucide-react'
 
 export type IngredientSection = {
@@ -226,6 +227,7 @@ export default function App() {
   const [error, setError] = useState('')
   const [selectedIdx, setSelectedIdx] = useState<number | null>(null)
   const [showAll, setShowAll] = useState(false)
+  const [editing, setEditing] = useState(false)
 
   const ordered = useMemo(() => recipes, [recipes])
   const current = selectedIdx != null ? ordered[selectedIdx] ?? null : null
@@ -266,11 +268,32 @@ export default function App() {
               >
                 <ArrowLeft size={16} /> Back
               </button>
+              {!editing && (
+                <button
+                  type="button"
+                  onClick={() => setEditing(true)}
+                  className="ml-auto inline-flex items-center gap-2 rounded-md bg-brand-600 dark:bg-brand-500 text-white px-5 py-2 text-sm font-medium shadow hover:bg-brand-700 dark:hover:bg-brand-600 transition"
+                >
+                  Edit
+                </button>
+              )}
             </div>
 
-            <RecipeDetails recipe={current} />
-
-            <ChatPanel sourceUrl={current.source_url} />
+            {editing ? (
+              <EditRecipeForm
+                recipe={current}
+                onCancel={() => setEditing(false)}
+                onSaved={async () => {
+                  await load()
+                  setEditing(false)
+                }}
+              />
+            ) : (
+              <>
+                <RecipeDetails recipe={current} />
+                <ChatPanel sourceUrl={current.source_url} />
+              </>
+            )}
           </section>
         ) : (
           <>
