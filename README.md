@@ -1,7 +1,7 @@
 
 # Recipe Organizer
 
-Extract, clean, and organize recipes from any URL. The FastAPI backend uses BeautifulSoup and Azure AI Inference (GitHub Models) to normalize titles, times, ingredients, and steps into a consistent schema, stores them in SQLite, and serves a modern React + Vite + Tailwind UI where you can browse, edit, upload an image, and chat with a recipe‑specific assistant.
+Extract, clean, and organize recipes from any URL. The FastAPI backend uses BeautifulSoup and Azure AI Inference (GitHub Models) to normalize titles, times, ingredients, and steps into a consistent schema, stores them in SQLite, and serves a modern React + Vite + Tailwind UI where you can browse, edit and chat with a recipe‑specific assistant.
 
 - Paste a recipe URL → hybrid extractor (heuristics + AI) saves a normalized recipe
 - Structured sections for ingredients and steps; quick in‑app editing
