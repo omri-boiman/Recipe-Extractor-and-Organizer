@@ -1,4 +1,4 @@
-# Recipe Organizer (FastAPI + Vite)
+# Recipe Organizer
 
 A full‑stack app that extracts structured recipes from web pages using BeautifulSoup and GitHub Models (Azure AI Inference), stores them in SQLite, and serves a React/Tailwind frontend.
 
