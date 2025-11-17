@@ -1,6 +1,15 @@
 # Recipe Organizer
 
-A full‑stack app that extracts structured recipes from web pages using BeautifulSoup and GitHub Models (Azure AI Inference), stores them in SQLite, and serves a React/Tailwind frontend.
+# Recipe Organizer
+
+Extract, clean, and organize recipes from any URL. The FastAPI backend uses BeautifulSoup and Azure AI Inference (GitHub Models) to normalize titles, times, ingredients, and steps into a consistent schema, stores them in SQLite, and serves a modern React + Vite + Tailwind UI where you can browse, edit, upload an image, and chat with a recipe‑specific assistant.
+
+- Paste a recipe URL → hybrid extractor (heuristics + AI) saves a normalized recipe
+- Structured sections for ingredients and steps; quick in‑app editing
+- Per‑recipe Q&A chatbot constrained to the selected recipe
+- local file storage
+- Simple local setup with .env or apikey.txt; no external database required
+- Dev via Vite proxy; production build can be served by FastAPI
 
 ## Demo Video
 ### Main Page
@@ -67,15 +76,11 @@ Visit http://127.0.0.1:5173 (Vite dev) or use the built assets after `npm run bu
 - SQLite DB at `recipes.db` (ignored by git)
 - Uploaded images in `uploads/` (ignored by git). A `.gitkeep` is included to keep the folder.
 
-## Security notes
-- Secrets are NOT stored in the repo. Use `.env` or `apikey.txt` locally. Never commit real tokens.
-- If a token was previously committed, rotate it immediately.
 
 ## API quick reference
 - `POST /extract-recipe?url=...` → Extracts and saves a recipe
 - `GET /recipes` → Lists saved recipes (structured for UI)
 - `DELETE /recipes?source_url=...` → Deletes a recipe
-- `POST /recipes/upload-image` (multipart form) → Associates an image with a recipe
 - `GET /db-health` → Basic DB integrity and counts
 
 ## License
