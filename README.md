@@ -1,4 +1,3 @@
-# Recipe Organizer
 
 # Recipe Organizer
 
