@@ -1,6 +1,14 @@
-# Recipe Organizer (FastAPI + Vite)
 
-A full‑stack app that extracts structured recipes from web pages using BeautifulSoup and GitHub Models (Azure AI Inference), stores them in SQLite, and serves a React/Tailwind frontend.
+# Recipe Organizer
+
+Extract, clean, and organize recipes from any URL. The FastAPI backend uses BeautifulSoup and Azure AI Inference (GitHub Models) to normalize titles, times, ingredients, and steps into a consistent schema, stores them in SQLite, and serves a modern React + Vite + Tailwind UI where you can browse, edit and chat with a recipe‑specific assistant.
+
+- Paste a recipe URL → hybrid extractor (heuristics + AI) saves a normalized recipe
+- Structured sections for ingredients and steps; quick in‑app editing
+- Per‑recipe Q&A chatbot constrained to the selected recipe
+- local file storage
+- Simple local setup with .env or apikey.txt; no external database required
+- Dev via Vite proxy; production build can be served by FastAPI
 
 ## Demo Video
 ### Main Page
@@ -11,6 +19,9 @@ https://github.com/user-attachments/assets/f5133b98-01fd-4c84-9751-abb5b01300c4
 
 ### AI ChatBot
 https://github.com/user-attachments/assets/d8b7bad6-7873-4c37-802a-8f6b20492d41
+
+### Edit
+https://github.com/user-attachments/assets/e1f3873d-1b5e-4dc8-aea5-43a420711fd5
 
 ## Tech stack
 - Backend: FastAPI, Pydantic, SQLite, BeautifulSoup, Requests
@@ -64,15 +75,11 @@ Visit http://127.0.0.1:5173 (Vite dev) or use the built assets after `npm run bu
 - SQLite DB at `recipes.db` (ignored by git)
 - Uploaded images in `uploads/` (ignored by git). A `.gitkeep` is included to keep the folder.
 
-## Security notes
-- Secrets are NOT stored in the repo. Use `.env` or `apikey.txt` locally. Never commit real tokens.
-- If a token was previously committed, rotate it immediately.
 
 ## API quick reference
 - `POST /extract-recipe?url=...` → Extracts and saves a recipe
 - `GET /recipes` → Lists saved recipes (structured for UI)
 - `DELETE /recipes?source_url=...` → Deletes a recipe
-- `POST /recipes/upload-image` (multipart form) → Associates an image with a recipe
 - `GET /db-health` → Basic DB integrity and counts
 
 ## License
